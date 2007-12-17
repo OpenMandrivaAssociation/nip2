@@ -10,7 +10,6 @@ License: LGPL
 Group: Video
 URL: http://www.vips.ecs.soton.ac.uk/index.php
 Source0: %{name}-%{version}.tar.bz2
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: flex 
 BuildRequires: bison 
 BuildRequires: gtk2-devel 
