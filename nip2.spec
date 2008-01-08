@@ -1,6 +1,6 @@
 %define name nip2
 %define version 7.10.21
-%define release %mkrel 2
+%define release %mkrel 3
 
 Summary: Nip is an interface for vips
 Name: %{name}
@@ -17,7 +17,8 @@ BuildRequires: gtk2-devel
 BuildRequires: libxml2-devel 
 BuildRequires: libvips-devel 
 BuildRequires: fftw3-devel
-BuildRequires: ImageMagick
+BuildRequires: imagemagick-devel
+BuildRequires: imagemagick
 BuildRequires: perl-XML-Parser
 
 %description
