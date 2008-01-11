@@ -37,7 +37,6 @@ affected by that change. Since it is demand-driven this update is usually
 
 %install
 rm -rf $RPM_BUILD_ROOT
-mkdir -p %buildroot{%_menudir,%_iconsdir,%_liconsdir,%_miconsdir}
 
 %makeinstall
 
@@ -48,14 +47,6 @@ convert -resize 48x48 proj/src/nip.ico %buildroot%{_miconsdir}/%{name}.png
 
 %find_lang %{name}
 
-cat << EOF > $RPM_BUILD_ROOT%{_menudir}/%{name}
-?package(nip2):command="%{_bindir}/%{name}" \
-icon="%{name}.png" needs="X11" section="Multimedia/Graphics" \
-title="Nip2" longtitle="The free image processing system" \
-mimetypes="" accept_url="false" \
-multiple_files="true" \
-xdg="true"
-EOF
 
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
 cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-%{name}.desktop << EOF
@@ -88,7 +79,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}
 %doc %{_defaultdocdir}/%{name}
 %{_mandir}/man?/*
-%{_menudir}/%{name}
 %{_iconsdir}/%{name}.png
 %{_liconsdir}/%{name}.png
 %{_miconsdir}/%{name}.png
