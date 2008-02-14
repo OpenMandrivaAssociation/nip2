@@ -1,6 +1,6 @@
 %define name nip2
 %define version 7.10.21
-%define release %mkrel 3
+%define release %mkrel 4
 
 Summary: Nip is an interface for vips
 Name: %{name}
