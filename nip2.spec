@@ -41,6 +41,7 @@ rm -rf $RPM_BUILD_ROOT
 %makeinstall
 
 rm -fr $RPM_BUILD_ROOT/%{_datadir}/locale/malkovich
+mkdir -p $RPM_BUILD_ROOT%{%{_miconsdir},%{_liconsdir}}
 convert -resize 32x32 proj/src/nip.ico %buildroot%{_iconsdir}/%{name}.png
 convert -resize 16x16 proj/src/nip.ico %buildroot%{_liconsdir}/%{name}.png
 convert -resize 48x48 proj/src/nip.ico %buildroot%{_miconsdir}/%{name}.png
