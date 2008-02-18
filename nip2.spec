@@ -2,7 +2,7 @@
 %define version 7.10.21
 %define release %mkrel 4
 
-Summary: Nip is an interface for vips
+Summary: Interface for vips
 Name: %{name}
 Version: %{version}
 Release: %{release}
