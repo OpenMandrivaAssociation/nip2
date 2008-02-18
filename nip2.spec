@@ -1,6 +1,6 @@
 %define name nip2
 %define version 7.10.21
-%define release %mkrel 4
+%define release %mkrel 5
 
 Summary: Interface for vips
 Name: %{name}
