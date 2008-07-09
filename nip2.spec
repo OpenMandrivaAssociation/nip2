@@ -1,70 +1,73 @@
-%define name nip2
-%define version 7.10.21
-%define release %mkrel 5
-
-Summary: Interface for vips
-Name: %{name}
-Version: %{version}
-Release: %{release}
-License: LGPL
-Group: Video
-URL: http://www.vips.ecs.soton.ac.uk/index.php
-Source0: %{name}-%{version}.tar.bz2
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-BuildRequires: flex 
-BuildRequires: bison 
-BuildRequires: gtk2-devel 
-BuildRequires: libxml2-devel 
-BuildRequires: libvips-devel 
-BuildRequires: fftw3-devel
-BuildRequires: imagemagick-devel
-BuildRequires: imagemagick
-BuildRequires: perl-XML-Parser
+Summary:	Interface for vips image manipulation tool
+Name:		nip2
+Version:	7.14.4
+Release:	%{mkrel 1}
+License:	LGPLv2+
+Group:		Video
+URL:		http://www.vips.ecs.soton.ac.uk/index.php
+Source0:	%{name}-%{version}.tar.gz
+# Add a configure option to disable updating of desktop and mime
+# databases during make install: this is wrong for packages
+# - AdamW 2008/07 (submitted upstream to ML)
+Patch0:		nip2-update-desktop.patch
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRequires:	flex 
+BuildRequires:	bison 
+BuildRequires:	gtk2-devel 
+BuildRequires:	libxml2-devel 
+BuildRequires:	vips-devel 
+BuildRequires:	fftw3-devel
+BuildRequires:	libgsl-devel
+BuildRequires:	imagemagick
+# It tests for xdg-open - AdamW
+BuildRequires:	xdg-utils
+BuildRequires:	perl-XML-Parser
+Requires:	xdg-utils
 
 %description
 nip2 aims to be about halfway between Excel and Photoshop. You don't directly
-edit images --- instead, like a spreadsheet, you build relationships between 
+edit images - instead, like a spreadsheet, you build relationships between 
 objects. When you make a change somewhere, nip2 will recalculate the objects 
 affected by that change. Since it is demand-driven this update is usually 
 (almost) instant, even for very, very large images.
 
 %prep
 %setup -q
+%patch0 -p1 -b .update
 
 %build
-%configure
+autoreconf
+%configure2_5x --enable-update-desktop=no
 %make
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
+rm -rf %{buildroot}
 %makeinstall
 
-rm -fr $RPM_BUILD_ROOT/%{_datadir}/locale/malkovich
-mkdir -p $RPM_BUILD_ROOT%{%{_miconsdir},%{_liconsdir}}
-convert -resize 32x32 proj/src/nip.ico %buildroot%{_iconsdir}/%{name}.png
-convert -resize 16x16 proj/src/nip.ico %buildroot%{_liconsdir}/%{name}.png
-convert -resize 48x48 proj/src/nip.ico %buildroot%{_miconsdir}/%{name}.png
+%if %mdkversion < 200900
+%post
+%update_desktop_database
+%update_mime_database
+%endif
+
+%if %mdkversion < 200900
+%postun
+%clean_mime_database
+%clean_desktop_database
+%endif
+
+
+rm -fr %{buildroot}/%{_datadir}/locale/malkovich
+
+mkdir -p %{buildroot}%{_iconsdir}/hicolor/{16x16,32x32,48x48}/apps
+convert -scale 16x16 proj/src/nip.ico %{buildroot}%{_iconsdir}/hicolor/16x16/apps/%{name}.png
+convert -scale 32x32 proj/src/nip.ico %{buildroot}%{_iconsdir}/hicolor/32x32/apps/%{name}.png
+convert -scale 48x48 proj/src/nip.ico %{buildroot}%{_iconsdir}/hicolor/48x48/apps/%{name}.png
 
 %find_lang %{name}
 
-
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
-cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-%{name}.desktop << EOF
-[Desktop Entry]
-Name=nip2
-Comment=Free image processing system
-Exec=%{_bindir}/%{name}
-Icon=%{name}
-Terminal=false
-Type=Application
-Categories=X-MandrivaLinux-Multimedia-Graphics;Graphics;
-EOF
-
-
 %clean
-rm -rf $RPM_BUILD_ROOT
-
+rm -rf %{buildroot}
 
 %if %mdkversion < 200900
 %post 
@@ -76,7 +79,6 @@ rm -rf $RPM_BUILD_ROOT
 %{clean_menus} 
 %endif
 
-
 %files -f %{name}.lang
 %defattr(-,root,root,-)
 %{_bindir}/*
@@ -84,8 +86,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}
 %doc %{_defaultdocdir}/%{name}
 %{_mandir}/man?/*
-%{_iconsdir}/%{name}.png
-%{_liconsdir}/%{name}.png
-%{_miconsdir}/%{name}.png
+%{_iconsdir}/hicolor/*/apps/%{name}.png
 %{_datadir}/applications/*
+%{_datadir}/mime/packages/%{name}.xml
 
