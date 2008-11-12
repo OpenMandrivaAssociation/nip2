@@ -1,21 +1,17 @@
 Summary:	Interface for vips image manipulation tool
 Name:		nip2
-Version:	7.14.4
+Version:	7.16.3
 Release:	%{mkrel 1}
 License:	LGPLv2+
 Group:		Video
 URL:		http://www.vips.ecs.soton.ac.uk/index.php
-Source0:	%{name}-%{version}.tar.gz
-# Add a configure option to disable updating of desktop and mime
-# databases during make install: this is wrong for packages
-# - AdamW 2008/07 (submitted upstream to ML)
-Patch0:		nip2-update-desktop.patch
+Source0:	http://www.vips.ecs.soton.ac.uk/supported/7.16/%{name}-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires:	flex 
 BuildRequires:	bison 
 BuildRequires:	gtk2-devel 
 BuildRequires:	libxml2-devel 
-BuildRequires:	vips-devel 
+BuildRequires:	vips-devel >= %version
 BuildRequires:	fftw3-devel
 BuildRequires:	libgsl-devel
 BuildRequires:	imagemagick
@@ -33,25 +29,25 @@ affected by that change. Since it is demand-driven this update is usually
 
 %prep
 %setup -q
-%patch0 -p1 -b .update
 
 %build
-autoreconf
-%configure2_5x --enable-update-desktop=no
+%configure2_5x --disable-update-desktop
 %make
 
 %install
 rm -rf %{buildroot}
-%makeinstall
+%makeinstall_std
 
 %if %mdkversion < 200900
 %post
+%update_menus
 %update_desktop_database
 %update_mime_database
 %endif
 
 %if %mdkversion < 200900
 %postun
+%clean_menus
 %clean_mime_database
 %clean_desktop_database
 %endif
@@ -68,16 +64,6 @@ convert -scale 48x48 proj/src/nip.ico %{buildroot}%{_iconsdir}/hicolor/48x48/app
 
 %clean
 rm -rf %{buildroot}
-
-%if %mdkversion < 200900
-%post 
-%{update_menus} 
-%endif
-
-%if %mdkversion < 200900
-%postun 
-%{clean_menus} 
-%endif
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
