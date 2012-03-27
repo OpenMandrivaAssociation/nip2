@@ -1,12 +1,11 @@
 Summary:	Interface for vips image manipulation tool
 Name:		nip2
-Version:	7.16.3
-Release:	%{mkrel 2}
+Version:	7.28.1
+Release:	1
 License:	LGPLv2+
 Group:		Video
 URL:		http://www.vips.ecs.soton.ac.uk/index.php
 Source0:	http://www.vips.ecs.soton.ac.uk/supported/7.16/%{name}-%{version}.tar.gz
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires:	flex 
 BuildRequires:	bison 
 BuildRequires:	gtk2-devel 
@@ -38,21 +37,6 @@ affected by that change. Since it is demand-driven this update is usually
 rm -rf %{buildroot}
 %makeinstall_std
 
-%if %mdkversion < 200900
-%post
-%update_menus
-%update_desktop_database
-%update_mime_database
-%endif
-
-%if %mdkversion < 200900
-%postun
-%clean_menus
-%clean_mime_database
-%clean_desktop_database
-%endif
-
-
 rm -fr %{buildroot}/%{_datadir}/locale/malkovich
 
 mkdir -p %{buildroot}%{_iconsdir}/hicolor/{16x16,32x32,48x48}/apps
@@ -62,8 +46,6 @@ convert -scale 48x48 proj/src/nip.ico %{buildroot}%{_iconsdir}/hicolor/48x48/app
 
 %find_lang %{name}
 
-%clean
-rm -rf %{buildroot}
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
