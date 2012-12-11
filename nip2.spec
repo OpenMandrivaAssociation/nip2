@@ -1,22 +1,24 @@
 Summary:	Interface for vips image manipulation tool
 Name:		nip2
-Version:	7.28.1
+Version:	7.30.1
 Release:	1
 License:	LGPLv2+
 Group:		Video
 URL:		http://www.vips.ecs.soton.ac.uk/index.php
 Source0:	http://www.vips.ecs.soton.ac.uk/supported/7.16/%{name}-%{version}.tar.gz
-BuildRequires:	flex 
-BuildRequires:	bison 
-BuildRequires:	gtk2-devel 
-BuildRequires:	libxml2-devel 
-BuildRequires:	vips-devel >= %version
-BuildRequires:	fftw3-devel
-BuildRequires:	libgsl-devel
+Patch0:		nip2-7.30.1-fix-build.patch
+Patch1:		nip2-7.30.1-linkage.patch
+BuildRequires:	flex
+BuildRequires:	bison
+BuildRequires:	pkgconfig(gtk+-2.0)
+BuildRequires:	pkgconfig(libxml-2.0)
+BuildRequires:	vips-devel >= %{version}
+BuildRequires:	pkgconfig(fftw3)
+BuildRequires:	pkgconfig(gsl)
 BuildRequires:	imagemagick
 # It tests for xdg-open - AdamW
 BuildRequires:	xdg-utils
-BuildRequires:	perl-XML-Parser
+BuildRequires:	perl(XML::Parser)
 Requires:	xdg-utils
 
 %description
@@ -28,16 +30,17 @@ affected by that change. Since it is demand-driven this update is usually
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
 
 %build
 %configure2_5x --disable-update-desktop
 %make
 
 %install
-rm -rf %{buildroot}
 %makeinstall_std
 
-rm -fr %{buildroot}/%{_datadir}/locale/malkovich
+rm -fr %{buildroot}%{_datadir}/locale/malkovich
 
 mkdir -p %{buildroot}%{_iconsdir}/hicolor/{16x16,32x32,48x48}/apps
 convert -scale 16x16 proj/src/nip.ico %{buildroot}%{_iconsdir}/hicolor/16x16/apps/%{name}.png
@@ -48,7 +51,6 @@ convert -scale 48x48 proj/src/nip.ico %{buildroot}%{_iconsdir}/hicolor/48x48/app
 
 
 %files -f %{name}.lang
-%defattr(-,root,root,-)
 %{_bindir}/*
 %defattr(644,root,root,755)
 %{_datadir}/%{name}
@@ -57,4 +59,5 @@ convert -scale 48x48 proj/src/nip.ico %{buildroot}%{_iconsdir}/hicolor/48x48/app
 %{_iconsdir}/hicolor/*/apps/%{name}.png
 %{_datadir}/applications/*
 %{_datadir}/mime/packages/%{name}.xml
+
 

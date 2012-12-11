@@ -1,0 +1,98 @@
+diff -ru a/config.h.in b/config.h.in
+--- a/config.h.in	2012-08-30 09:39:49.000000000 -0400
++++ b/config.h.in	2012-10-18 00:20:22.924550778 -0400
+@@ -264,6 +264,9 @@
+ /* path of xdg-open binary */
+ #undef XDG_OPEN
+ 
++/* Define to 1 if lex declares yyleng to be yy_size_t. */
++#undef YYLENG_IS_YY_SIZE_T
++
+ /* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
+    `char[]'. */
+ #undef YYTEXT_POINTER
+Only in b: config.h.in~
+diff -ru a/configure b/configure
+--- a/configure	2012-08-30 09:39:49.000000000 -0400
++++ b/configure	2012-10-18 00:20:18.261517632 -0400
+@@ -14729,6 +14729,36 @@
+ 
+ fi
+ 
++# flex >= 2.5.36 uses a nonstandard type for yyleng
++{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether yyleng is yy_size_t" >&5
++$as_echo_n "checking whether yyleng is yy_size_t... " >&6; }
++cat > conftest.l <<EOF
++%%
++%%
++yy_size_t yyleng;
++EOF
++$LEX conftest.l
++cat confdefs.h - <<_ACEOF >conftest.$ac_ext
++/* end confdefs.h.  */
++ `cat $LEX_OUTPUT_ROOT.c`
++_ACEOF
++if ac_fn_c_try_compile "$LINENO"; then :
++
++  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
++$as_echo "yes" >&6; }
++
++$as_echo "#define YYLENG_IS_YY_SIZE_T 1" >>confdefs.h
++
++
++else
++
++  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
++$as_echo "no" >&6; }
++
++fi
++rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
++rm -f conftest.l $LEX_OUTPUT_ROOT.c
++
+ # get packages we need
+ # gtk before 2.4.9 crashes with the way we use combobox :-(
+ 
+diff -ru a/configure.in b/configure.in
+--- a/configure.in	2012-08-07 09:12:54.000000000 -0400
++++ b/configure.in	2012-10-18 00:20:18.263517645 -0400
+@@ -135,6 +135,23 @@
+   AC_DEFINE(HAVE_FLEX,1,[using flex, rather than lex])
+ fi
+ 
++# flex >= 2.5.36 uses a nonstandard type for yyleng
++AC_MSG_CHECKING([whether yyleng is yy_size_t])
++cat > conftest.l <<EOF
++%%
++%%
++yy_size_t yyleng;
++EOF
++$LEX conftest.l
++AC_COMPILE_IFELSE([AC_LANG_DEFINES_PROVIDED [`cat $LEX_OUTPUT_ROOT.c`]], [
++  AC_MSG_RESULT(yes)
++  AC_DEFINE(YYLENG_IS_YY_SIZE_T,1,
++    [Define to 1 if lex declares yyleng to be yy_size_t.])
++], [
++  AC_MSG_RESULT(no)
++])
++rm -f conftest.l $LEX_OUTPUT_ROOT.c
++
+ # get packages we need
+ # gtk before 2.4.9 crashes with the way we use combobox :-(
+ PKG_CHECK_MODULES(REQUIRED_PACKAGES, 
+diff -ru a/src/parser.h b/src/parser.h
+--- a/src/parser.h	2012-04-18 06:38:51.000000000 -0400
++++ b/src/parser.h	2012-10-18 00:20:18.264517651 -0400
+@@ -55,7 +55,13 @@
+ void nip2yyerror( const char *sub, ... )
+ 	__attribute__((format(printf, 1, 2)));
+ void yyerror( const char *msg ); 
++#ifdef YYLENG_IS_YY_SIZE_T
++/* Assume yy_size_t is size_t.
++ */
++extern size_t yyleng;
++#else
+ extern int yyleng;			/* lex stuff */
++#endif
+ 
+ /* Lex gathers tokens here for workspace.c
+  */

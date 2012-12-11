@@ -1,0 +1,12 @@
+diff -urN nip2-7.30.1/src/Makefile.am nip2-7.30.1-patched/src/Makefile.am
+--- nip2-7.30.1/src/Makefile.am	2012-07-23 21:17:34.000000000 +1100
++++ nip2-7.30.1-patched/src/Makefile.am	2012-11-13 21:28:06.274312512 +1100
+@@ -385,7 +385,7 @@
+ 	$(BISON) --defines=$*.h -o $*.c $<
+ 
+ INCLUDES = @IP_CFLAGS@ 
+-LDADD = @IP_CFLAGS@ @IP_LIBS@
++LDADD = @IP_CFLAGS@ @IP_LIBS@ @FFTW3_LIBS@
+ AM_LDFLAGS = @LDFLAGS@
+ 
+ dist-hook:
