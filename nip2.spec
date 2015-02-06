@@ -1,7 +1,7 @@
 Summary:	Interface for vips image manipulation tool
 Name:		nip2
 Version:	7.30.1
-Release:	1
+Release:	2
 License:	LGPLv2+
 Group:		Video
 URL:		http://www.vips.ecs.soton.ac.uk/index.php
