@@ -4,7 +4,7 @@ Version:	7.30.1
 Release:	2
 License:	LGPLv2+
 Group:		Video
-URL:		http://www.vips.ecs.soton.ac.uk/index.php
+URL:		https://www.vips.ecs.soton.ac.uk/index.php
 Source0:	http://www.vips.ecs.soton.ac.uk/supported/7.16/%{name}-%{version}.tar.gz
 Patch0:		nip2-7.30.1-fix-build.patch
 Patch1:		nip2-7.30.1-linkage.patch
