@@ -8,6 +8,11 @@ URL:		https://www.vips.ecs.soton.ac.uk/index.php
 Source0:	http://www.vips.ecs.soton.ac.uk/supported/7.16/%{name}-%{version}.tar.gz
 Patch0:		nip2-7.30.1-fix-build.patch
 Patch1:		nip2-7.30.1-linkage.patch
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	flex
 BuildRequires:	bison
 BuildRequires:	pkgconfig(gtk+-2.0)
